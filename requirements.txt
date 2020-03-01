@@ -1,3 +1,15 @@
+sodapy
+
 requests
 
-sodapy
+sys
+
+json
+
+requests
+
+os
+
+pandas
+
+numpy
