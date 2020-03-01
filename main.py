@@ -15,13 +15,13 @@ identifier = "nc67-uf89"
 #if __name__ == "__main__":
 
 client = Socrata(domain, app_token)
-num_rows = 49063985
+row_limit_by_sodapy = 50000
 
 #def main():
 parser = argparse.ArgumentParser()#(usage="main.py --page_size=the_number_of_rows_in_a_page --num_pages=number_of_pages --output=filename", description="put the parameters")
 	
 parser.add_argument('--page_size', type=int, default=1000, help="put the page size")
-parser.add_argument('--num_pages', type=int, default=4, help="put the number of pages")
+parser.add_argument('--num_pages', type=int, default=row_limit_by_sodapy, help="put the number of pages")
 parser.add_argument('--output', type=str, default='results.json', help="put the name of output file")
 
 args = parser.parse_args()
@@ -29,8 +29,10 @@ args = parser.parse_args()
 #print(args.num_pages)
 #print(args.output)	
 
-#if args.num_pages > 0:
-results = client.get("nc67-uf89", limit = args.page_size*args.num_pages)
+if args.num_pages == 0:
+	results = client.get("nc67-uf89", limit = row_limit_by_sodapy)
+else:
+	results = client.get("nc67-uf89", limit = args.page_size*args.num_pages)
 
 df = pd.DataFrame.from_dict(results)
 df.to_json (args.output, orient='records', lines=True)
