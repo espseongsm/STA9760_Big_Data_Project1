@@ -8,7 +8,7 @@ import pandas as pd
 import numpy as np
 
 domain = "data.cityofnewyork.us"
-app_token = 'RXeJhe7A7KO2CTm4SURGWOu5y'
+app_token = os.environ['APP_KEY']
 identifier = "nc67-uf89"
 
 if __name__ == "__main__":
