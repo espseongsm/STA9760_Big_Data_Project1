@@ -2,8 +2,8 @@ sodapy
 
 requests
 
-requests
-
 pandas
 
 numpy
+
+elasticsearch
