@@ -16,14 +16,10 @@ domain = "data.cityofnewyork.us"
 app_token = os.environ['APP_KEY']
 identifier = "nc67-uf89"
 
-# if __name__ == "__main__":
-
 client = Socrata(domain, app_token)
 data_size = client.get(identifier, select='COUNT(*)')[0]
 num_rows = int(str(data_size)[11:19])
 
-# def main():
-# (usage="main.py --page_size=the_number_of_rows_in_a_page --num_pages=number_of_pages --output=filename", description="put the parameters")
 parser = argparse.ArgumentParser()
 
 parser.add_argument('--page_size', type=int, default=1000,
@@ -50,35 +46,43 @@ def create_and_update_index(index_name, doc_type):
         es.indices.create(index=index_name)
     except Exception:
         pass
-
+    
+    es.indices.put_mapping(
+        index=index_name,
+        doc_type=doc_type,
+        body={
+            doc_type: {
+                "properties": {"fine_amount": {"type": "double"}, 
+                "reduction_amount": {"type": "double"}, 
+                "penalty_amount": {"type": "double"}, 
+                "payment_amount": {"type": "double"}}
+            }
+        }
+    )
     return es
 
-es = create_and_update_index('parking-violation',
-     'violation')
+es = create_and_update_index('parking_violation','violation')
 
 i = 0
 while i < num_pages:
     results = client.get(identifier, limit=page_size
     , offset=i*page_size)
 
-    # Step 1: create an elastic search "index" to store data
-    print(4)
-
-    # Step 2: fetch bike data from the internets
     docks = results
-    print(7)
-        
-    # Step 3: Push data into the elastic search
 
     for dock in docks:
-        dock["issue_date"] = str(dock["issue_date"])
-        dock["issue_date"] = datetime.strptime(
-            dock["issue_date"],"%m/%d/%Y")
-        print(8)
-        es = Elasticsearch()
-        print(9)
-        res = es.index(index='parking-violation'
-        , doc_type='violation', body=dock)
-        print(10)
-        print(res['result'])
+        try:
+            dock["issue_date"] = str(dock["issue_date"])
+            dock["issue_date"] = datetime.strptime(
+                dock["issue_date"],"%m/%d/%Y")
+
+            es = Elasticsearch()
+            
+            res = es.index(index='parking_violation'
+            , doc_type='violation', body=dock)
+            
+            print(res['result'])
+
+        except Exception:
+            pass
     i += 1
