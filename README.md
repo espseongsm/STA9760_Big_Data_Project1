@@ -1,5 +1,13 @@
 # Analyzing Millions of NYC Parking Violations
 
+- Language
+  - Python: sodapy, sys, argparse, json, requests, os, pandas, numpy, elasticsearch, datetime, time, math
+  - Docker
+- Service: ElasticSearch, Kibana
+- [Code for Python](main.py)
+- [Code for Docker](Dockerfile)
+- [Code for Docker compose](docker-compose.yml)
+  
 For this analysis, 100,000 rows of dataset is loaded into kibana API on top of elasticsearch API. Parking violations in the past 5-year are used, which is 92,871 out of 100,000. The exact date is from March 18th, 2015 to March 18th, 2020.
 
 Detailed analysis is as below.
